@@ -81,12 +81,16 @@
     "react-dom": "^19.0.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=18"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "_overridesNote": "tsup pins esbuild ^0.27, which is inside GHSA-g7r4-m6w7-qqqr. Dev-only and low severity (esbuild's dev server, which tsup never starts), but pinned forward so `npm audit` stays clean. Drop this once tsup ships esbuild >=0.28.1.",
+  "overrides": {
+    "esbuild": "^0.28.1"
   }
 }
