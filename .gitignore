@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.cache/
+*.tgz
+*.tsbuildinfo
+.DS_Store
+*.log
+coverage/
+.env*

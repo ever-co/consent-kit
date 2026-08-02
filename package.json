@@ -1,0 +1,92 @@
+{
+  "name": "consent-gate",
+  "version": "0.1.0",
+  "description": "Structural cookie-consent gating. Declare trackers with a category; the library owns injection and refuses to load anything before that category is granted. Vanilla core + optional React wrapper, built on CookieConsent v3.",
+  "keywords": [
+    "consent",
+    "cookie-consent",
+    "gdpr",
+    "eprivacy",
+    "tracker",
+    "analytics",
+    "cmp",
+    "react",
+    "nextjs",
+    "cookieconsent"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ever-co/consent-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ever-co/consent-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ever-co/consent-kit/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "import": "./dist/testing.js",
+      "require": "./dist/testing.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "scripts": {
+    "build": "node scripts/clean.mjs && tsup && node scripts/add-use-client.mjs && node scripts/copy-css.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "node scripts/verify-dist.mjs",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build && npm run verify"
+  },
+  "dependencies": {
+    "vanilla-cookieconsent": "^3.1.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "jsdom": "^25.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>consent-gate — plain HTML example</title>
+    <link rel="stylesheet" href="https://unpkg.com/consent-gate/dist/styles.css" />
+    <style>
+      body { font: 16px/1.6 system-ui, sans-serif; margin: 3rem auto; max-width: 46rem; padding: 0 1rem; }
+      code, pre { background: #f4f4f5; border-radius: 4px; padding: 0.1em 0.35em; }
+      pre { padding: 0.8rem; overflow-x: auto; }
+      button { font: inherit; padding: 0.35rem 0.7rem; cursor: pointer; }
+      #state { border-left: 3px solid #999; padding-left: 1rem; }
+    </style>
+  </head>
+  <body>
+    <h1>consent-gate — plain HTML</h1>
+    <p>
+      Two trackers are declared below. Neither is in the DOM right now. Open devtools, watch the network
+      tab, and note that nothing loads until you choose.
+    </p>
+
+    <div id="state"><em>booting…</em></div>
+
+    <p>
+      <button type="button" data-cc="show-preferencesModal">Cookie preferences</button>
+      <button type="button" id="withdraw">Withdraw consent</button>
+      <button type="button" id="audit">Audit loaded trackers</button>
+    </p>
+
+    <pre id="audit-output">(nothing audited yet)</pre>
+
+    <footer><a href="/privacy">Privacy policy</a></footer>
+
+    <script type="module">
+      import { initConsent } from 'https://unpkg.com/consent-gate/dist/index.js';
+
+      const GA_ID = 'G-XXXXXXXXXX'; // replace with your own
+
+      const consent = initConsent({
+        policyVersion: '2026-08-01',
+        copy: { privacyPolicyHref: '/privacy' },
+        trackers: [
+          {
+            id: 'google-analytics',
+            category: 'analytics',
+            src: `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`,
+            cookies: [/^_ga/, '_gid'],
+          },
+          {
+            id: 'google-analytics-config',
+            category: 'analytics',
+            code: `window.dataLayer = window.dataLayer || [];
+                   function gtag(){dataLayer.push(arguments)}
+                   gtag('js', new Date());
+                   gtag('config', '${GA_ID}', { anonymize_ip: true });`,
+          },
+          {
+            id: 'meta-pixel',
+            category: 'marketing',
+            src: 'https://connect.facebook.net/en_US/fbevents.js',
+            cookies: ['_fbp'],
+          },
+        ],
+        onChange(record, granted) {
+          document.querySelector('#state').innerHTML = `
+            <p><strong>Granted:</strong> ${granted.join(', ')}</p>
+            <p><strong>Record:</strong> ${record ? `${record.id} · ${record.updatedAt}` : 'no choice made yet'}</p>
+          `;
+        },
+      });
+
+      // Existing Iubenda-era listeners keep working unchanged.
+      document.addEventListener('iubenda_consent_given', (event) => {
+        console.log('[legacy bridge] iubenda_consent_given', event.detail);
+      });
+
+      document.querySelector('#withdraw').addEventListener('click', () => consent.reset());
+      document.querySelector('#audit').addEventListener('click', () => {
+        const loaded = [...document.querySelectorAll('script[data-consent-tracker]')].map(
+          (s) => `${s.dataset.consentTracker} (${s.dataset.consentCategory})`,
+        );
+        document.querySelector('#audit-output').textContent =
+          loaded.length ? loaded.join('\n') : 'no trackers loaded';
+      });
+    </script>
+  </body>
+</html>
