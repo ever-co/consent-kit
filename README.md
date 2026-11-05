@@ -431,3 +431,4 @@ npm run verify    # post-build: ESM + CJS entries resolve, "use client" survived
 
 UI by [CookieConsent v3](https://github.com/orestbida/cookieconsent) (Orest Bida, MIT). See
 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md).
+
